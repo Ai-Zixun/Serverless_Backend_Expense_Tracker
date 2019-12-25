@@ -1,1 +1,1 @@
-# Go_RESTful_API_Expense_Tracker
+# Expense Tracker (Golang RESTful API)
