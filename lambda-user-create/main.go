@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -28,6 +29,40 @@ type Response struct {
 	Message string `json:"message`
 	Key     string `json:"key"`
 	Ok      bool   `json:"ok"`
+}
+
+func DatabaseUserExist(item Item) bool {
+	// Load Credentials
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+
+	// DynamoDB Client
+	svc := dynamodb.New(sess)
+
+	tableName := "Expense-Tracker-Users"
+	result, err := svc.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String(tableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			"username": {
+				S: aws.String(item.Username),
+			},
+		},
+	})
+
+	if err != nil {
+		fmt.Println("Error - Check User Exist ")
+		log.Fatal(err)
+		return true
+	}
+
+	if len(result.Item) != 0 {
+		fmt.Println("DynamoDB Username Found")
+		return true
+	}
+
+	fmt.Println("DynamoDB Username Available")
+	return true
 }
 
 func DatabaseCreateUser(item Item) {
@@ -71,10 +106,19 @@ func Handler(request Request) (Response, error) {
 		CreationDate: time.Now(),
 	}
 
+	// Return if the username is taken
+	if DatabaseUserExist(item) {
+		return Response{
+			Message: fmt.Sprintf("The username %s is taken", request.Username),
+			Key:     "null",
+			Ok:      false,
+		}, nil
+	}
+
 	DatabaseCreateUser(item)
 
 	return Response{
-		Message: fmt.Sprintf("Hello %s, Your Password is: %s", request.Username, request.Password),
+		Message: fmt.Sprintf("Hello %s, Your user is created", request.Username),
 		Key:     "null",
 		Ok:      true,
 	}, nil
