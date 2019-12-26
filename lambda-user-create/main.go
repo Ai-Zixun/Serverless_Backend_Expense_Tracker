@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
 type Request struct {
-	UserName string `json:"user-name"`
+	UserName string `json:"username"`
 	Password string `json:"password"`
 }
 
