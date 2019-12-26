@@ -29,6 +29,32 @@ type Response struct {
 	Ok      bool   `json:"ok"`
 }
 
+func DatabaseUserExist(item Item) bool{
+	// Load Credentials 
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+
+	// DynamoDB Client
+	svc := dynamodb.New(sess)
+
+	result, err := svc.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String(tableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			"username": {
+				N: aws.String(item.Username),
+			},
+		},
+	})
+	if err == nil {
+		fmt.Println("DynamoDB User Name Unavilable")
+		return true 
+	}
+
+	fmt.Println("DynamoDB User Name Available")
+	return false 
+}
+
 func DatabaseCreateUser(item Item) {
 	// Load Credentials 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
@@ -70,10 +96,19 @@ func Handler(request Request) (Response, error) {
 		CreationDate: time.Now(), 
 	}
 
+	// Return if the username is taken 
+	if DatabaseUserExist(item) {
+		return Response{
+			Message: fmt.Sprintf("The username %s is taken", request.Username),
+			Key:     "null",
+			Ok:      true,
+		}, nil
+	}
+	
 	DatabaseCreateUser(item) 
 
 	return Response{
-		Message: fmt.Sprintf("Hello %s, Your Password is: %s", request.Username, request.Password),
+		Message: fmt.Sprintf("Hello %s, Your user is created", request.Username),
 		Key:     "null",
 		Ok:      true,
 	}, nil
