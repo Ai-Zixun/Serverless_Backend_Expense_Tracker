@@ -4,38 +4,39 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"encoding/json"
+	"github.com/gorilla/mux"
 )
-
-type Article struct {
-	Title string `json:"title"`
-	Desc string `json:"desc"`
-	Content string `json:"content"`
-}
-
 
 func main() {
 	requestHandler()
 }
 
-func allArticles(w http.ResponseWriter, r *http.Request) {
-	articles := []Article{
-		Article{Title: "Title 1", Desc: "Description 1", Content: "Content 1"}, 
-	}
-
-
-	fmt.Println("Endpoint: All Article")
-	json.NewEncoder(w).Encode(articles); 
-}
-
-func homepage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Homepage Endpint Hit")
-}
-
 func requestHandler() {
-	http.HandleFunc("/", homepage)
-	http.HandleFunc("/articles", allArticles)
-	log.Fatal(http.ListenAndServe(":8081", nil)) 
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/user/create", userCreate).Methods("POST"); 
+	router.HandleFunc("/user/log-in", userLogIn).Methods("POST"); 
+	router.HandleFunc("/expense/create", expenseCreate).Methods("POST"); 
+	router.HandleFunc("/expense/retrieve", expenseRetrive).Methods("POST"); 
+	log.Fatal(http.ListenAndServe(":8081", router)) 
 }
 
-// API Endpoint: creat_user(user_name, user_password) 
+// API Endpoint: user_create(user_name, user_password) 
+func userCreate(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "POST END POINT: /user/create")
+}
+
+// API Endpoint: user_log_in(user_name, user_password)
+func userLogIn(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "POST END POINT: /user/log-in")
+}
+
+// API Endpoint: expense_create(user_api_key, name, timestamp, currency, amount)
+func expenseCreate(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "POST END POINT: /expense/create")
+}
+
+// API Endpoint: expense_retrieve(user_api_key, count, bgn_date, end_date, last_return)   
+func expenseRetrive(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "POST END POINT: /expense/retrieve")
+}
+
