@@ -57,12 +57,13 @@ func DatabaseUserExist(item Item) bool {
 	}
 
 	if len(result.Item) != 0 {
+		fmt.Println(result.Item)
 		fmt.Println("DynamoDB Username Found")
 		return true
 	}
 
 	fmt.Println("DynamoDB Username Available")
-	return true
+	return false
 }
 
 func DatabaseCreateUser(item Item) {
