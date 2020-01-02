@@ -23,6 +23,7 @@
 ## API Endpoints Information
 ### User Create 
 Endpoint (Deployed): https://pssga2r420.execute-api.us-east-2.amazonaws.com/Alpha/user/create 
+
 Type: Post
 
 Example Request Body: 
@@ -44,6 +45,7 @@ Example Response Body:
 
 ### User Log In 
 Endpoint (Deployed): https://pssga2r420.execute-api.us-east-2.amazonaws.com/Alpha/user/log-in
+
 Type: Post 
 
 Example Request Body: 
