@@ -12,9 +12,18 @@
 | expense/create  | expense_create(user_api_key, name, timestamp, currency, amount)           |
 | expense/retrive | expense_retrieve(user_api_key, count, bgn_date, end_date, last_return)    |
 
+## Implementation: AWS API Gateway + AWS Lambda + AWS DynamoDB
+
+<p align="center">
+  <img src="readme_img/aws-api-gateway.svg" height="100" title="api-gateway">
+  <img src="readme_img/aws-lambda.svg" height="100" title="lambda">
+  <img src="readme_img/aws-dynamodb" height="100" title="dymanodb">
+</p>
+
 
 ### User Create 
 Endpoint (Deployed): https://pssga2r420.execute-api.us-east-2.amazonaws.com/Alpha/user/create 
+
 
 ### User Log In 
 Endpoint (Deployed): https://pssga2r420.execute-api.us-east-2.amazonaws.com/Alpha/user/log-in
