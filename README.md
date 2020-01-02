@@ -15,9 +15,9 @@
 ## Implementation: AWS API Gateway + AWS Lambda + AWS DynamoDB
 
 <p align="center">
-  <img src="readme_img/aws-api-gateway.svg" height="100" title="api-gateway">
-  <img src="readme_img/aws-lambda.svg" height="100" title="lambda">
-  <img src="readme_img/aws-dynamodb" height="100" title="dymanodb">
+  <img src="readme_img/aws-api-gateway.svg" height="200" title="api-gateway">
+  <img src="readme_img/aws-lambda.svg" height="200" title="lambda">
+  <img src="readme_img/aws-dynamodb.svg" height="200" title="dymanodb">
 </p>
 
 
