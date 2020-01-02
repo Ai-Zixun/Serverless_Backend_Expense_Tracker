@@ -9,7 +9,6 @@ import (
 	encoder "expense-tracker/encoder"
 
 	"github.com/aws/aws-lambda-go/lambda"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -107,9 +106,28 @@ func DatabaseCreateUser(item Item) {
 }
 
 // Validate - Validate the username and password format
-func Validate(username string, password string) bool {
+func Validate(username string, password string) (bool, string) {
+	if len(username) > 15 || len(password) > 15 {
+		return false, "Username or Password too long (Valid username and password should be between 5 - 15 letters)"
+	}
 
-	return true
+	if len(username) < 5 || len(password) < 5 {
+		return false, "Username or Password too short (Valid username and password should be between 5 - 15 letters)"
+	}
+
+	for _, char := range username {
+		if !((char >= '0' && char <= '9') || (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z')) {
+			return false, "Invalid letter in username"
+		}
+	}
+
+	for _, char := range password {
+		if !((char >= '0' && char <= '9') || (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z')) {
+			return false, "Invalid letter in password"
+		}
+	}
+
+	return true, ""
 }
 
 // Handler - Handler to process the AWS API Gateway request to create a user
@@ -119,6 +137,14 @@ func Handler(request Request) (Response, error) {
 		Username:     request.Username,
 		Password:     request.Password,
 		CreationDate: time.Now(),
+	}
+
+	if ok, msg := Validate(request.Username, request.Password); !ok {
+		return Response{
+			Message: msg,
+			Key:     "null",
+			Ok:      false,
+		}, nil
 	}
 
 	// Return if the username is taken
